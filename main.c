@@ -9,7 +9,7 @@
 #include "gw_gray.h"
 #include "Menu.h"    
 
-
+float Target_Speed = 10.0f; // 目标速度
 
 int main(void)
 {
@@ -36,6 +36,7 @@ void TIMER_0_INST_IRQHandler(void)
 		tick_count_10ms = 0;
 		Key_Read(); // 读取按键状态
 		Encoder_Speed(); // 计算编码器速度
+		vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);
 	}
 
 	// 100ms任务
