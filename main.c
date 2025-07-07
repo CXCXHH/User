@@ -35,13 +35,13 @@ void TIMER_0_INST_IRQHandler(void)
 	{
 		tick_count_10ms = 0;
 		Key_Read(); // 读取按键状态
+		Encoder_Speed(); // 计算编码器速度
 	}
 
 	// 100ms任务
 	if (++tick_count_100ms >= 100)
 	{
-		tick_count_100ms = 0;
-		Encoder_Speed(); // 计算编码器速度
+		tick_count_100ms = 0;		
 	}
 
 	// 1000ms任务
