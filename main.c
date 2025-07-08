@@ -13,9 +13,12 @@
 
 PID_TypeDef pid_motor1; 
 PID_TypeDef pid_motor2; 
+PID_TypeDef pid_position;
 
 //期望速度
 float Target_Speed = 0.0f;
+//期望位置
+float Target_Position = 0.0f;
 
 int main(void)
 {
@@ -24,8 +27,9 @@ int main(void)
 	BEEP_OFF();
 	Menu_Init();
 	NVIC_EnableIRQ_Init();
-	PID_Init(&pid_motor1, 40.5f, 2.05f, 0.0f);
-    PID_Init(&pid_motor2, 40.0f, 2.05f, 0.0f);
+	PID_Init(&pid_motor1, 9.18f, 0.002f, 0.0f);
+    PID_Init(&pid_motor2, 8.9f, 0.001f, 0.0f);
+	PID_Init(&pid_position, 75.0f, 0.0f, 0.0f);
 	while(1)
 	{
 		Menu_loop();
@@ -39,25 +43,22 @@ void TIMER_0_INST_IRQHandler(void)
 	static uint16_t tick_count_100ms = 0;// 10ms任务计数器
 	static uint16_t tick_count_1000ms = 0;// 1000ms任务计数器
 
+	
 	// 10ms任务
 	if (++tick_count_10ms >= 10) 
 	{
 		tick_count_10ms = 0;
 		Key_Read(); // 读取按键状态
 		Encoder_Speed(); // 计算编码器速度
-		int pwm_output1 = (int)PID_realize(&pid_motor1, Target_Speed, Motor1_Speed);
-        int pwm_output2 = (int)PID_realize(&pid_motor2, Target_Speed, Motor2_Speed);
+		//PID_velocity_Position(); //串级PI-PD
 
-        Set_Motor1_Speed(pwm_output1);
-        Set_Motor2_Speed(pwm_output2);
-
-		vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);
+		//vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);//发送数据到vofa
 	}
 
 	// 20ms任务
 	if (++tick_count_20ms >= 100)
 	{
-
+		
 		tick_count_20ms = 0;		
 	}
 
