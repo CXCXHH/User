@@ -9,7 +9,8 @@
 #include "gw_gray.h"
 #include "Menu.h"
 #include "PID.h"  
-#include "Control.h"  
+#include "Control.h" 
+#include "jy61p.h" 
 
 PID_TypeDef pid_motor1; 
 PID_TypeDef pid_motor2; 
@@ -22,14 +23,21 @@ float Target_Position = 0.0f;
 
 int main(void)
 {
-	SYSCFG_DL_init(); 
+	SYSCFG_DL_init();
 	//delay_ms(100);
 	BEEP_OFF();
+	jy61pInit(); 
 	Menu_Init();
 	NVIC_EnableIRQ_Init();
+	//速度
 	PID_Init(&pid_motor1, 9.18f, 0.002f, 0.0f);
     PID_Init(&pid_motor2, 8.9f, 0.001f, 0.0f);
-	PID_Init(&pid_position, 75.0f, 0.0f, 0.0f);
+	//位置
+	PID_Init(&pid_position, 75.0f, 0.0f, 5.0f);
+	//转向
+	PID_Init(&pid_tuen, 13.5f, 0.0f, 5.0f);
+	//角度
+	PID_Init(&pid_angle, 1.0f, 0.0f, 5.0f); 
 	while(1)
 	{
 		Menu_loop();
@@ -50,6 +58,10 @@ void TIMER_0_INST_IRQHandler(void)
 		tick_count_10ms = 0;
 		Key_Read(); // 读取按键状态
 		Encoder_Speed(); // 计算编码器速度
+		if(g_line_following_enabled)
+        {
+            Line_Following();
+        }
 		//PID_velocity_Position(); //串级PI-PD
 
 		//vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);//发送数据到vofa
