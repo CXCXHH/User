@@ -31,6 +31,8 @@ void usart0_send_bytes(unsigned char *buf, int len)
     buf++;
   }
 }
+
+
 uint8_t HAL_UART_Transmit( uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
 	uint8_t  *pdata8bits;
