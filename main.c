@@ -11,13 +11,14 @@
 #include "PID.h"  
 #include "Control.h" 
 #include "jy61p.h" 
+#include "MaixCAM.h"
 
 PID_TypeDef pid_motor1; 
 PID_TypeDef pid_motor2; 
 PID_TypeDef pid_position;
 
 //期望速度
-float Target_Speed = 0.0f;
+float Target_Speed = 50.0f;
 //期望位置
 float Target_Position = 0.0f;
 
@@ -26,21 +27,28 @@ int main(void)
 	SYSCFG_DL_init();
 	//delay_ms(100);
 	BEEP_OFF();
+	MaixCAM_Init();
+	delay_ms(500);
+	MaixCAM_Send_Command(0xAA);
 	jy61pInit(); 
 	Menu_Init();
+	Control_Init();
 	NVIC_EnableIRQ_Init();
+	
 	//速度
 	PID_Init(&pid_motor1, 9.18f, 0.002f, 0.0f);
     PID_Init(&pid_motor2, 8.9f, 0.001f, 0.0f);
 	//位置
 	PID_Init(&pid_position, 75.0f, 0.0f, 5.0f);
 	//转向
-	PID_Init(&pid_tuen, 13.5f, 0.0f, 5.0f);
+	PID_Init(&pid_tuen, 18.5f, 0.0f, 5.0f);
 	//角度
 	PID_Init(&pid_angle, 1.0f, 0.0f, 5.0f); 
+
 	while(1)
 	{
 		Menu_loop();
+		
 	}
 }
 
@@ -54,14 +62,12 @@ void TIMER_0_INST_IRQHandler(void)
 	
 	// 10ms任务
 	if (++tick_count_10ms >= 10) 
+
 	{
 		tick_count_10ms = 0;
-		Key_Read(); // 读取按键状态
-		Encoder_Speed(); // 计算编码器速度
-		if(g_line_following_enabled)
-        {
-            Line_Following();
-        }
+		Key_Read(); 
+		Encoder_Speed();
+		Control(); 
 		//PID_velocity_Position(); //串级PI-PD
 
 		//vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);//发送数据到vofa
@@ -86,7 +92,7 @@ void TIMER_0_INST_IRQHandler(void)
 	if (++tick_count_1000ms >= 1000)
 	{
 		tick_count_1000ms = 0;
-		LED1_TOGGLE();
+		//LED1_TOGGLE();
 	}
 	
 }
