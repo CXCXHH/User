@@ -41,7 +41,7 @@ int main(void)
 	//位置
 	PID_Init(&pid_position, 75.0f, 0.0f, 5.0f);
 	//转向
-	PID_Init(&pid_tuen, 18.5f, 0.0f, 5.0f);
+	PID_Init(&pid_tuen, 20.5f, 0.0f, 5.0f);
 	//角度
 	PID_Init(&pid_angle, 1.0f, 0.0f, 5.0f); 
 
@@ -92,7 +92,7 @@ void TIMER_0_INST_IRQHandler(void)
 	if (++tick_count_1000ms >= 1000)
 	{
 		tick_count_1000ms = 0;
-		//LED1_TOGGLE();
+		LED1_TOGGLE();
 	}
 	
 }
