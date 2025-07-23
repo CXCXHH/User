@@ -23,6 +23,8 @@ void usart0_send_byte(unsigned char byte)
 {
 	DL_UART_Main_transmitDataBlocking(UART_0_INST, byte);
 }
+
+//串口发送数组
 void usart0_send_bytes(unsigned char *buf, int len)
 {
   while(len--)

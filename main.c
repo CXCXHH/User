@@ -18,7 +18,7 @@ PID_TypeDef pid_motor2;
 PID_TypeDef pid_position;
 
 //期望速度
-float Target_Speed = 50.0f;
+float Target_Speed;
 //期望位置
 float Target_Position = 0.0f;
 
@@ -47,6 +47,7 @@ int main(void)
 
 	while(1)
 	{
+		
 		Menu_loop();
 		
 	}
@@ -67,7 +68,8 @@ void TIMER_0_INST_IRQHandler(void)
 		tick_count_10ms = 0;
 		Key_Read(); 
 		Encoder_Speed();
-		Control(); 
+		Control();
+		 
 		//PID_velocity_Position(); //串级PI-PD
 
 		//vofa_sendData(Target_Speed, Motor1_Speed, Motor2_Speed);//发送数据到vofa
@@ -76,7 +78,7 @@ void TIMER_0_INST_IRQHandler(void)
 	// 20ms任务
 	if (++tick_count_20ms >= 100)
 	{
-		
+		Read_Sensor();
 		tick_count_20ms = 0;		
 	}
 
